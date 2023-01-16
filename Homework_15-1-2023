@@ -1,0 +1,526 @@
+
+// عادل عبدالله الشايع
+// كود لعبة اكس او من سطر رقم 17 إلى 350
+// كود المنيو من سطر رقم 352 ألى 526
+
+/*
+هذا كلاس مستخدم في بعض الأخطاء التي لها نطاق رقمي معين
+public class numberRange extends Exception
+{
+    public numberRange(String str)
+    {
+        super(str);
+    }
+}
+*/
+
+import java.util.*;
+
+/*
+عادل عبدالله الشايع
+مشروع لعبة (x & o) مع إضافة ذكاء للكمبيوتر
+دالة دور اللاعب سطر 35
+دالة دور الكمبيوتر سطر 73
+دالة الطباعة سطر 117
+دالة الفوز والتعادل سطر 124
+دالة الذكاء سطر 206
+*/
+
+public class Main
+{
+    public static boolean draw = false;
+    private static int drawNum = 0;
+    public static void main(String[] args)
+    {
+        String [][] numbers = {{"1 ","2 ","3 "},{"4 ","5 ","6 "},{"7 ","8 ","9 "}}; //مصفوفة أرقام سيتم طباعتها داخل مربع اللعبة ويتم تغيير كل خانة فيها من رقم إلى o أو x
+        ArrayList<Integer> choiceNumbers = new ArrayList<Integer>(); //قائمة مصفوفة أرقام لتخزين أي رقم يتم اختياره خلال اللعب سواء من اللاعب أو الكمبيوتر للتأكد من عدم اختياره مرتين
+        Scanner s = new Scanner(System.in);
+        int input = 0; //لتخزين الرقم المدخل من قبل اللاعب
+
+        System.out.println("\n**Welcome to tic tac toe game**\n");
+        System.out.println(" 1 | 2 | 3\n---+---+---");
+        System.out.println(" 4 | 5 | 6\n---+---+---");
+        System.out.println(" 7 | 8 | 9\n");
+
+        try {
+            System.out.print("Enter any number from 1 to 9: ");
+            input = s.nextInt();
+            if(input < 1 || input > 9)
+            {
+                throw new numberRange("You should enter number from 1 to 9 only..!!");
+            }
+        }
+        catch (numberRange ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        catch (InputMismatchException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+        try {
+            playerChoice(input, numbers, choiceNumbers);
+        }
+        catch (numberRange e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (InputMismatchException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("Finish Game!");
+    }
+       public static void playerChoice(int input,String[][] numbers,ArrayList<Integer> choiceNumbers) throws numberRange,InputMismatchException,Exception //دالة اللاعب
+       {
+           String theX = "x ";
+           Scanner s = new Scanner(System.in);
+           boolean isFinis = false;
+
+           while (choiceNumbers.contains(input)) //للتأكد هل الرقم المدخل سبق وتم اختياره من قبل أم لا
+           {
+
+               System.out.print("Please enter a number: ");
+               input = s.nextInt();
+               if (!s.hasNextInt())
+                   throw new numberRange("Wrong choice!!");
+
+               if (choiceNumbers.contains(input))
+                   System.out.println("Wrong choice!!");
+           }
+
+           for (int i = 0; i < 3; i++) {
+               for (int j = 0; j < 3; j++) {
+                   if (numbers[i][j].charAt(numbers[i][j].length() - 2) == 'x' || numbers[i][j].charAt(numbers[i][j].length() - 2) == 'o') {
+                       continue;
+                   }
+                   String x = numbers[i][j].substring(0, numbers[i][j].length() - 1);
+                   int y = Integer.valueOf(x);
+                   if (y == input)
+                       numbers[i][j] = theX;
+               }
+           }
+           choiceNumbers.add(input);
+           theDraw(numbers[0][0], numbers[0][1], numbers[0][2],
+                   numbers[1][0], numbers[1][1], numbers[1][2],
+                   numbers[2][0], numbers[2][1], numbers[2][2]);
+
+           isFinis = (win(numbers)) ? true : false; //للتأكد هل اللعبة انتهت بالفوز أو التعادل ام لا
+           //System.out.println();
+           if (!isFinis)
+               computerChoice(input, numbers, choiceNumbers);
+       }
+    public static void computerChoice(int input,String[][] numbers,ArrayList<Integer> choiceNumbers) //دالة الكمبيوتر
+    {
+        Random r = new Random();
+        int random;
+        String theO = "o ";
+        String x = null;
+        int y;
+        boolean isFinis = false;
+
+        random = smart(numbers); // استدعاء دالة الذكاء
+
+        while (choiceNumbers.contains(random))
+            random = r.nextInt(1, 10);
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (numbers[i][j].charAt(numbers[i][j].length() - 2) == 'x' || numbers[i][j].charAt(numbers[i][j].length() - 2) == 'o')
+                    continue;
+                else
+                {
+                    String n = numbers[i][j].substring(0, numbers[i][j].length() - 1);
+                    int z = Integer.valueOf(n);
+                    if (z == Integer.valueOf(random)) {
+                        x = numbers[i][j].substring(0, numbers[i][j].length() - 1);
+                        y = Integer.valueOf(x);
+                        input = y;
+                        numbers[i][j] = theO;
+                    }
+                }
+            }
+        }
+        System.out.println("Computer choice " + x);
+        choiceNumbers.add(input);
+        theDraw(numbers[0][0], numbers[0][1], numbers[0][2],
+                numbers[1][0], numbers[1][1], numbers[1][2],
+                numbers[2][0], numbers[2][1], numbers[2][2]);
+
+        isFinis = (win(numbers)) ? true : false; //للتأكد هل اللعبة انتهت بالفوز أو التعادل ام لا
+        if (!isFinis)
+            try {
+                playerChoice(input, numbers, choiceNumbers);
+            }
+            catch (numberRange e)
+            {
+                System.out.println(e.getMessage());
+            }
+            catch (InputMismatchException e)
+            {
+                System.out.println(e.getMessage());
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
+        //System.out.println();
+    }
+    public static void theDraw(String  s1,String  s2,String s3,String s4,String s5,String s6,String s7,String s8,String s9) //دالة رسم المربع والبيانات بداخله
+    {
+        System.out.println(" " + s1 +  "| " + s2 + "| " + s3 + " \n---+---+---");
+        System.out.println(" " + s4 +  "| " + s5 + "| " + s6 + " \n---+---+---");
+        System.out.println(" " + s7 +  "| " + s8 + "| " + s9 + " ");
+    }
+
+    public static boolean win(String[][] numbers) //دالة التأكد من الفوز أو التعادل
+    {
+        boolean isFinish = false;
+        drawNum++;
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (numbers[i][0] == numbers[i][1] && numbers[i][1] == numbers[i][2])
+            {
+                if (numbers[i][0].charAt(numbers[i][0].length() -2) == 'x')
+                {
+                    System.out.println("You Win");
+                    isFinish = true;
+                    draw = true;
+                    break;
+                }
+                else if (numbers[i][0].charAt(numbers[i][0].length() -2) == 'o')
+                {
+                    System.out.println("Computer Win");
+                    isFinish = true;
+                    draw = true;
+                    break;
+                }
+                else
+                    isFinish = false;
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (numbers[0][i] == numbers[1][i] && numbers[1][i] == numbers[2][i])
+            {
+                if (numbers[0][i].charAt(numbers[0][i].length() -2) == 'x')
+                {
+                    System.out.println("You Win");
+                    isFinish = true;
+                    draw = true;
+                    break;
+                }
+                else if (numbers[0][i].charAt(numbers[0][i].length() -2) == 'o')
+                {
+                    System.out.println("Computer Win");
+                    isFinish = true;
+                    draw = true;
+                    break;
+                }
+                else
+                    isFinish = false;
+            }
+        }
+        if (numbers[0][0] == numbers[1][1] && numbers[1][1] == numbers[2][2])
+        {
+            if (numbers[0][0].charAt(numbers[0][0].length() -2) == 'x')
+            {
+                System.out.println("You Win");
+                isFinish = true;
+                draw = true;
+            }
+            else if (numbers[0][0].charAt(numbers[0][0].length() -2) == 'o')
+            {
+                System.out.println("Computer Win");
+                isFinish = true;
+                draw = true;
+            }
+            else
+                isFinish = false;
+        }
+        if (numbers[0][2] == numbers[1][1] && numbers[1][1] == numbers[2][0])
+        {
+            if (numbers[0][2].charAt(numbers[0][2].length() -2) == 'x')
+            {
+                System.out.println("You Win");
+                isFinish = true;
+                draw = true;
+            }
+            else if (numbers[0][2].charAt(numbers[0][2].length() -2) == 'o')
+            {
+                System.out.println("Computer Win");
+                isFinish = true;
+                draw = true;
+            }
+            else
+                isFinish = false;
+        }
+        if (!draw && drawNum == 9)
+        {
+            System.out.println("Game ended with a tie!");
+            isFinish = true;
+        }
+        return isFinish;
+    }
+
+    public static int smart(String[][] numbers) //دالة الذكاء
+    {
+        Random r = new Random();
+        int choice = 0;
+
+        if (numbers[0][0].charAt(numbers[0][0].length() -2) == 'x' && numbers[0][1].charAt(numbers[0][1].length() -2) == 'x' ||
+                numbers[2][0].charAt(numbers[2][0].length() -2) == 'x' && numbers[1][1].charAt(numbers[1][1].length() -2) == 'x'||
+                numbers[2][2].charAt(numbers[2][2].length() -2) == 'x' && numbers[1][2].charAt(numbers[1][2].length() -2) == 'x')
+        {
+            if (numbers[0][2].charAt(numbers[0][2].length() -2) == 'x')
+                choice = r.nextInt(1, 10);
+            else
+                choice = 3;
+        }
+        else if (numbers[0][0].charAt(numbers[0][0].length() -2) == 'x' && numbers[1][1].charAt(numbers[1][1].length() -2) == 'x'||
+                numbers[0][2].charAt(numbers[0][2].length() -2) == 'x' && numbers[1][2].charAt(numbers[1][2].length() -2) == 'x'||
+                numbers[2][0].charAt(numbers[2][0].length() -2) == 'x' && numbers[2][1].charAt(numbers[2][1].length() -2) == 'x')
+        {
+            if (numbers[2][2].charAt(numbers[2][2].length() -2) == 'x')
+                choice = r.nextInt(1, 10);
+            else
+                choice = 9;
+        }
+        else if (numbers[0][0].charAt(numbers[0][0].length() -2) == 'x' && numbers[1][0].charAt(numbers[1][0].length() -2) == 'x'||
+                numbers[0][2].charAt(numbers[0][2].length() -2) == 'x' && numbers[1][1].charAt(numbers[1][1].length() -2) == 'x'||
+                numbers[2][2].charAt(numbers[2][2].length() -2) == 'x' && numbers[2][1].charAt(numbers[2][1].length() -2) == 'x')
+        {
+            if (numbers[2][0].charAt(numbers[2][0].length() -2) == 'x')
+                choice = r.nextInt(1, 10);
+            else
+                choice = 7;
+        }
+        else if (numbers[0][2].charAt(numbers[0][2].length() -2) == 'x' && numbers[0][1].charAt(numbers[0][1].length() -2) == 'x'||
+                numbers[2][2].charAt(numbers[2][2].length() -2) == 'x' && numbers[1][1].charAt(numbers[1][1].length() -2) == 'x')
+        {
+            if (numbers[0][0].charAt(numbers[0][0].length() -2) == 'x')
+                choice = r.nextInt(1, 10);
+            else
+                choice = 1;
+        }
+        else if (numbers[0][1].charAt(numbers[0][1].length() -2) == 'x' && numbers[1][1].charAt(numbers[1][1].length() -2) == 'x')
+        {
+            if (numbers[2][1].charAt(numbers[2][1].length() -2) == 'x')
+                choice = r.nextInt(1, 10);
+            else
+                choice = 8;
+        }
+        else if (numbers[1][0].charAt(numbers[1][0].length() -2) == 'x' && numbers[1][1].charAt(numbers[1][1].length() -2) == 'x')
+        {
+            if (numbers[1][2].charAt(numbers[1][2].length() -2) == 'x')
+                choice = r.nextInt(1, 10);
+            else
+                choice = 6;
+        }
+        else if (numbers[2][1].charAt(numbers[2][1].length() -2) == 'x' && numbers[1][1].charAt(numbers[1][1].length() -2) == 'x')
+        {
+            if (numbers[0][1].charAt(numbers[0][1].length() -2) == 'x')
+                choice = r.nextInt(1, 10);
+            else
+                choice = 2;
+        }
+        else if (numbers[1][2].charAt(numbers[1][2].length() -2) == 'x' && numbers[1][1].charAt(numbers[1][1].length() -2) == 'x')
+        {
+            if (numbers[1][0].charAt(numbers[1][0].length() -2) == 'x')
+                choice = r.nextInt(1, 10);
+            else
+                choice = 4;
+        }
+        else
+            choice = r.nextInt(1, 10);
+        return choice;
+    }
+}
+
+import java.util.InputMismatchException;
+import java.util.*;
+
+
+public class Main {
+    public static int inputNumber = 0;
+    public static ArrayList<Integer> list1 = new ArrayList<Integer>();
+    public static void main(String[] args)
+    {
+        menuList();
+    }
+
+    public static void menuList()
+    {
+        String[] menuListF7 = {"1- Accept elements of an array.",
+                "2- Display elements of an array.",
+                "3- Search the element within array.",
+                "4- Sort the array.",
+                "5- Exit."};
+        ArrayList<String> menuList7 = new ArrayList<String>();
+
+        for (int i = 0; i < menuListF7.length; i++) {
+            menuList7.add(menuListF7[i]);
+        }
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("\nMenu list:");
+        System.out.println();
+        for (String s: menuList7)
+        {
+            System.out.println(s);
+        }
+
+        try {
+            System.out.print("Enter number between 1 and 5: \n");
+            System.out.println("-----------------------------------------------");
+            inputNumber = sc.nextInt();
+            if (inputNumber < 1 || inputNumber > 5)
+                throw new numberRange("Error input range!!");
+        }
+        catch (numberRange e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (InputMismatchException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+
+            if (inputNumber ==1)
+            {
+                acceptList();
+                menuList();
+            } else if (inputNumber == 2)
+            {
+                DisplayList();
+                menuList();
+            } else if (inputNumber == 3)
+            {
+                SearchList();
+                menuList();
+            }
+            else if(inputNumber == 4)
+            {
+                SortList();
+                menuList();
+            }
+
+
+    }
+    public static void acceptList()
+    {
+        Scanner text = new Scanner(System.in);
+        int received = 0;
+
+        try {
+            System.out.print("Please enter the number list range you need: ");
+            received = text.nextInt();
+
+            if (received < 1)
+                throw new numberRange("You should add number equal to or grater than 1.");
+        }
+        catch (NegativeArraySizeException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (InputMismatchException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (numberRange e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        int[] forList1 = new int[received];
+
+        for (int i = 0; i < forList1.length; i++) {
+            int x = i+1;
+            System.out.print("Please enter " + x + " number: ");
+            int numbers = text.nextInt();
+            forList1[i] = numbers;
+        }
+
+        for (int i = 0; i < forList1.length; i++) {
+            list1.add(forList1[i]);
+        }
+
+        menuList();
+    }
+    public static void DisplayList()
+    {
+        System.out.println("-----------------------------------------------");
+        System.out.println("The first list is: " + list1);
+        System.out.println("-----------------------------------------------");
+        menuList();
+    }
+    public static void SearchList()
+    {
+        Scanner text = new Scanner(System.in);
+        int received = 0;
+        int count = -1;
+        boolean isContains = false;
+
+        try {
+            System.out.print("Enter any number to to check if it is in the list or not: ");
+            received = text.nextInt();
+        }
+        catch (InputMismatchException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        for (int n:list1) {
+            count++;
+            if (n == received)
+            {
+                isContains = true;
+                break;
+            }
+        }
+        if(isContains) {
+            int x = count +1;
+            System.out.println("-----------------------------------------------");
+            System.out.println("This number in this list in element number: " + x);
+            System.out.println("-----------------------------------------------");
+        }
+        else {
+            System.out.println("-----------------------------------------------");
+            System.out.println("This number not found!\n");
+            System.out.println("-----------------------------------------------");
+        }
+        menuList();
+    }
+    public static void SortList()
+    {
+        System.out.println("The old list is " + list1);
+        Collections.sort(list1);
+        System.out.println("The new list is " + list1);
+    }
+}
