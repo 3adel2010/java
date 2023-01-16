@@ -25,7 +25,7 @@ import java.util.*;
 دالة الفوز والتعادل سطر 124
 دالة الذكاء سطر 206
 */
-
+ 
 public class Main
 {
     public static boolean draw = false;
