@@ -51,10 +51,10 @@ create table order_products (
 
 ## solution
 
-insert into countries value (1,'KSA','Asia');
-insert into users value (102,'aa1@aa.aa','m',curdate(),1);
-insert into orders value (201,'start',curdate(),101);
-insert into products value (301,150,'water','valid');
-insert into order_products value (12,curdate(),201,301);
-update countries set name = 'Saudi arabia' where code = 1;
+insert into countries value (1,'KSA','Asia');.
+insert into users value (102,'aa1@aa.aa','m',curdate(),1);.
+insert into orders value (201,'start',curdate(),101);.
+insert into products value (301,150,'water','valid');.
+insert into order_products value (12,curdate(),201,301);.
+update countries set name = 'Saudi arabia' where code = 1;.
 delete from products where id = 301;
