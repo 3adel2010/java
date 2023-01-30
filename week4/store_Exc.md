@@ -1,52 +1,52 @@
 <h1> week 4 day 1 exc..</h1>
 
-create database store;
-### countries
-create table countries(
-    code int(25) primary key,
-    name varchar(25) unique ,
-    continent_name varchar(25) not null
+create database store;<br>
+### countries<br>
+create table countries(<br>
+    code int(25) primary key,<br>
+    name varchar(25) unique ,<br>
+    continent_name varchar(25) not null<br>
 );
 
 ## users
 
-create table users (
-    id int primary key,
-    email varchar(45) unique,
-    gender varchar(1) check ( gender = 'm' or gender  = 'f'),
-    created_at datetime default curdate(),
-    country_code int,
-    foreign key(country_code) references countries(code)
+create table users (<br>
+    id int primary key,<br>
+    email varchar(45) unique,<br>
+    gender varchar(1) check ( gender = 'm' or gender  = 'f'),<br>
+    created_at datetime default curdate(),<br>
+    country_code int,<br>
+    foreign key(country_code) references countries(code)<br>
 );
 
 ## orders
 
-create table orders (
-    id int(25) primary key,
-    status varchar(6) check ( status = 'start' or status = 'finish'),
-    created_at datetime default curdate(),
-    user_id int,
-    foreign key (user_id) references users(id)
+create table orders (<br>
+    id int(25) primary key,<br>
+    status varchar(6) check ( status = 'start' or status = 'finish'),<br>
+    created_at datetime default curdate(),<br>
+    user_id int,<br>
+    foreign key (user_id) references users(id)<br>
 );
 
 ## products
 
-create table products (
-    id int(25) primary key,
-    price int (8) default 0,
-    name varchar(25) not null,
-    status varchar(7) check (status  = 'valid' or status = 'expired')
+create table products (<br>
+    id int(25) primary key,<br>
+    price int (8) default 0,<br>
+    name varchar(25) not null,<br>
+    status varchar(7) check (status  = 'valid' or status = 'expired')<br>
 );
 
 ## order products
 
-create table order_products (
-    quantity int (15) default 0,
-    created_at datetime default curdate(),
-    order_id int,
-    product_id int,
-    foreign key (order_id) references orders(id),
-    foreign key (product_id) references products(id)
+create table order_products (<br>
+    quantity int (15) default 0,<br>
+    created_at datetime default curdate(),<br>
+    order_id int,<br>
+    product_id int,<br>
+    foreign key (order_id) references orders(id),<br>
+    foreign key (product_id) references products(id)<br>
 );
 
 ## solution
