@@ -8,7 +8,7 @@ create table countries(
     continent_name varchar(25) not null
 );
 
-### users
+### 1 users
 
 create table users (
     id int primary key,
@@ -19,7 +19,7 @@ create table users (
     foreign key(country_code) references countries(code)
 );
 
-### orders
+### 2 orders
 
 create table orders (
     id int(25) primary key,
@@ -29,7 +29,7 @@ create table orders (
     foreign key (user_id) references users(id)
 );
 
-### products
+### 3 products
 
 create table products (
     id int(25) primary key,
@@ -38,7 +38,7 @@ create table products (
     status varchar(7) check (status  = 'valid' or status = 'expired')
 );
 
-### order products
+### 4 order products
 
 create table order_products (
     quantity int (15) default 0,
@@ -49,7 +49,7 @@ create table order_products (
     foreign key (product_id) references products(id)
 );
 
-### solution
+### 5 solution
 
 insert into countries value (1,'KSA','Asia');
 insert into users value (102,'aa1@aa.aa','m',curdate(),1);
