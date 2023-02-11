@@ -1,0 +1,48 @@
+package com.example.spring_week5_day2_exc.Service;
+
+import com.example.spring_week5_day2_exc.ApiException.ApiException;
+import com.example.spring_week5_day2_exc.Model.Teacher;
+import com.example.spring_week5_day2_exc.Repository.TeacherRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class TeacherService
+{
+    private final TeacherRepository teacherRepository;
+    public List<Teacher> getTeacher()
+    {
+        return teacherRepository.findAll();
+    }
+    public  void addTeacher(Teacher teacher)
+    {
+        teacherRepository.save(teacher);
+    }
+    public boolean updateTeacher(Integer id,Teacher teacher)
+    {
+        Teacher teacher1 = teacherRepository.findTeacherById(id);
+        if(teacher1==null)
+            return false;
+        teacher.setId(id);
+        teacherRepository.save(teacher);
+        return true;
+    }
+    public boolean deleteTeacher(Integer id)
+    {
+        Teacher teacher = teacherRepository.findTeacherById(id);
+        if(teacher==null)
+            return false;
+        teacherRepository.delete(teacher);
+        return true;
+    }
+    public Teacher getAllDetails(Integer id)
+    {
+        Teacher teacher = teacherRepository.findTeacherById(id);
+        if(teacher==null)
+            throw new ApiException("ID not found!");
+        return teacher;
+    }
+}
